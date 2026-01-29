@@ -6,12 +6,24 @@
 
 > **TL;DR** In this repo, we study properties and applications of Engram. More findings are on the way!
 
+> If you find TinyEngram useful, a ⭐ helps support the project.
 
 TinyEngram is an open research project exploring the [Engram](https://github.com/deepseek-ai/Engram) architecture—an LLM enhancement that boosts phrase-level understanding by integrating a compact N-gram memory module and a gated retrieval mechanism into key transformer layers.
 
 Built on [Qwen](https://github.com/QwenLM/Qwen), TinyEngram provides a lightweight, ready-to-train codebase for anyone to reproduce, experiment with, or extend Engram-style models. We actively share new experiments, training logs, and findings right here—making this repo both a toolkit and a living research notebook.
 
 You are welcome to propose any questions in the [Issues](https://github.com/AutoArk/TinyEngram/issues). We will burn our own GPUs to research on any interesting questions. Join us in  evolving how LLMs remember what matters! 🧠✨
+
+<details open>
+<summary><strong>📢 Announcements</strong></summary>
+
+<div style="max-height: 100px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; margin-top: 8px;">
+
+- 📌 **2026.1.23: Initial TinyEngram Commit.**
+
+</div>
+
+</details>
 
 ## 🧪 Key Finding 1. Engram as Parameter Efficient Fine-Tuning Method
 
