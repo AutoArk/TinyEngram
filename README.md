@@ -153,6 +153,10 @@ Using the small-scale, filtered [glaive-function-calling-v2](https://huggingface
 We hope this experiment can serve as a solid starting point for parameter selection in similar small-scale supervised fine-tuning (SFT) scenarios.
 🔗 [Click here to view detailed results.](./doc/experiments/engram_parameters_tuning.md)
 
+### Reproduce our experiments
+
+Reproduction details of experiments conducted in **Key Finging 2**: TODO
+
 ## 🗺️ More Research is on the way!
 | Category | Item | Status |
 | :--- | :--- | :---: |
