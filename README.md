@@ -19,7 +19,7 @@ You are welcome to propose any questions in the [Issues](https://github.com/Auto
 
 <div style="max-height: 100px; overflow-y: auto; border: 2px solid #4a90e2; padding: 10px; margin-top: 8px; background-color: #f3f6f9; border-radius: 6px; font-size: 0.95em; color: #2c3e50; line-height: 1.4;">
 
-- 📌 **2026-01-30** — Added comparison of **catastrophic forgetting** between **TinyEngram and LoRA**. 
+- 📌 **2026-01.30** — Added comparison of **catastrophic forgetting** between **TinyEngram and LoRA**. 
 - 📌 **2026.01.30** — Added **parameter ablation studies** of TinyEngram with convergence observations.  
 - 📌 **2026.01.23** — Initial TinyEngram commit.  
 
