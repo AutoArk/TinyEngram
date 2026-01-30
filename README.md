@@ -1,30 +1,74 @@
 <div align="center">
-  <img src="doc/tinyengram.png" width="80%" alt="TinyEngram Logo"/>
+  <img src="doc/tinyengram.png" width="500" alt="TinyEngram Logo"/>
 
 # TinyEngram: Exploring New Axis of Scaling
+
+<p align="center">
+  <strong>An open research project exploring the Engram architecture.</strong>
+</p>
+
+[**Report Issues**](https://github.com/AutoArk/TinyEngram/issues)
+
 </div>
 
-> **TL;DR** In this repo, we study properties and applications of Engram. More findings are on the way!
+---
 
-> If you find TinyEngram useful, a ⭐ helps support the project.
+> [!NOTE]
+> **TL;DR:** In this repo, we study properties and applications of Engram. More findings are on the way!
+>
+> *If you find TinyEngram useful, a ⭐ helps support the project.*
 
-TinyEngram is an open research project exploring the [Engram](https://github.com/deepseek-ai/Engram) architecture—an LLM enhancement that boosts phrase-level understanding by integrating a compact N-gram memory module and a gated retrieval mechanism into key transformer layers.
+<br>
 
-Built on [Qwen](https://github.com/QwenLM/Qwen), TinyEngram provides a lightweight, ready-to-train codebase for anyone to reproduce, experiment with, or extend Engram-style models. We actively share new experiments, training logs, and findings right here—making this repo both a toolkit and a living research notebook.
-
-You are welcome to propose any questions in the [Issues](https://github.com/AutoArk/TinyEngram/issues). We will burn our own GPUs to research on any interesting questions. Join us in  evolving how LLMs remember what matters! 🧠✨
-
+<div align="center">
 <details open>
-<summary><strong>🔉 Announcements</strong></summary>
+<summary style="
+      cursor: pointer; 
+      display: inline-flex; 
+      align-items: center; 
+      justify-content: center;
+      font-weight: 700; 
+      font-size: 1.15em; 
+      color: #24292e; 
+      margin-bottom: 20px;">
+      <span style="margin-right: 8px;">📢</span> Latest Announcements
+    </summary>
 
-<div style="max-height: 100px; overflow-y: auto; border: 2px solid #4a90e2; padding: 10px; margin-top: 8px; background-color: #f3f6f9; border-radius: 6px; font-size: 0.95em; color: #2c3e50; line-height: 1.4;">
+<div align="left" style="
+  max-width: 600px;
+  max-height: 120px; 
+  overflow-y: auto; 
+  margin-top: 30px; 
+  background-color: #ffffff; 
+  border: 1px solid #e1e4e8; 
+  border-left: 5px solid #4a90e2; 
+  border-radius: 6px; 
+  padding: 15px 20px; 
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  font-size: 0.9em; 
+  line-height: 1.6; 
+  color: #24292e;">
 
-- 📌 **2026.01.30** — Added comparison of **catastrophic forgetting** between **TinyEngram and LoRA**. 
-- 📌 **2026.01.30** — Added **parameter ablation studies** of TinyEngram with convergence observations.  
-- 📌 **2026.01.23** — Initial TinyEngram commit.  
+- <span style="color: #6a737d; font-family: monospace;">2026.01.30</span> — 📌 Added comparison of **catastrophic forgetting** between **TinyEngram and LoRA**.
+- <span style="color: #6a737d; font-family: monospace;">2026.01.30</span> — 📌 Added **parameter ablation studies** of TinyEngram with convergence observations.
+- <span style="color: #6a737d; font-family: monospace;">2026.01.23</span> — 🎉 Initial TinyEngram commit.
 
 </div>
 </details>
+</div>
+
+<br>
+
+## 📖 Introduction
+
+**TinyEngram** is an open research project exploring the [Engram](https://github.com/deepseek-ai/Engram) architecture—an LLM enhancement that boosts phrase-level understanding by integrating a compact N-gram memory module and a gated retrieval mechanism into key transformer layers.
+
+Built on [Qwen](https://github.com/QwenLM/Qwen), **TinyEngram** provides a lightweight, ready-to-train codebase for anyone to reproduce, experiment with, or extend Engram-style models. We actively share new experiments, training logs, and findings right here—making this repo both a toolkit and a living research notebook.
+
+> [!TIP]
+> **Join the Research**
+> You are welcome to propose any questions in the [Issues](https://github.com/AutoArk/TinyEngram/issues). We will burn our own GPUs to research on any interesting questions. Join us in evolving how LLMs remember what matters! 🧠✨
 
 ## 🧪 Key Finding 1. Engram as Parameter Efficient Fine-Tuning Method
 
