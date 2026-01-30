@@ -15,14 +15,15 @@ Built on [Qwen](https://github.com/QwenLM/Qwen), TinyEngram provides a lightweig
 You are welcome to propose any questions in the [Issues](https://github.com/AutoArk/TinyEngram/issues). We will burn our own GPUs to research on any interesting questions. Join us in  evolving how LLMs remember what matters! 🧠✨
 
 <details open>
-<summary><strong>📢 Announcements</strong></summary>
+<summary><strong>🔉 Announcements</strong></summary>
 
-<div style="max-height: 100px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; margin-top: 8px;">
+<div style="max-height: 100px; overflow-y: auto; border: 2px solid #4a90e2; padding: 10px; margin-top: 8px; background-color: #f3f6f9; border-radius: 6px; font-size: 0.95em; color: #2c3e50; line-height: 1.4;">
 
-- 📌 **2026.1.23: Initial TinyEngram Commit.**
+- 📌 **2026-01-30** — Added comparison of **catastrophic forgetting** between **TinyEngram and LoRA**. 
+- 📌 **2026.01.30** — Added **parameter ablation studies** of TinyEngram with convergence observations.  
+- 📌 **2026.01.23** — Initial TinyEngram commit.  
 
 </div>
-
 </details>
 
 ## 🧪 Key Finding 1. Engram as Parameter Efficient Fine-Tuning Method
@@ -47,14 +48,14 @@ The train and eval loss  demonstrate robust convergence. This confirms that the 
 <table>
   <tr>
     <td align="center">
-      <img src="doc/experiments/sft_train.png"
+      <img src="doc/experiments/figures/sft_train.png"
            height="260"
            style="object-fit: contain;" />
       <br/>
       <sub>Training Loss</sub>
     </td>
     <td align="center">
-      <img src="doc/experiments/sft_eval.png"
+      <img src="doc/experiments/figures/sft_eval.png"
            height="260"
            style="object-fit: contain;" />
       <br/>
@@ -85,6 +86,8 @@ The train and eval loss  demonstrate robust convergence. This confirms that the 
 | social sciences| 0.4826                   | 0.5389 (⬆️ +0.0563)           |
 | stem          | 0.3508                    | 0.4088 (⬆️ +0.0580)           |
 
+> **📌 Update (2026.01.30):** We have added a new set of experiments comparing Engram and LoRA on catastrophic forgetting. Please refer to [**Engram vs LoRA Catastrophic Forgetting Experiment**](#1-engram-vs-lora-catastrophic-forgetting-experiment) for details.
+
 ### 3. Vocabulary Scalability Analysis
 
 *   **Objective**: Investigate the relationship between Engram memory size (vocabulary size) and performance gains.
@@ -93,7 +96,7 @@ The train and eval loss  demonstrate robust convergence. This confirms that the 
 In our experiments, we observe an apparent trade-off: smaller capacities may suffer from semantic collisions, while larger ones can become difficult to fully utilize given limited data. [Click here to view detailed results](./doc/experiments/engram_scaling_on_small_dataset.md)
 
 <div align="center">
-  <img src="doc/experiments/engram_scaling_on_small_dataset.png" width="50%" alt="engram_scaling"/>
+  <img src="doc/experiments/figures/engram_scaling_on_small_dataset.png" width="50%" alt="engram_scaling"/>
 </div>
 
 | Task                  | Nano (2k/0.2k) | Small (10k/1k) | Medium (20k/2k) | Large (100k/10k) | Qwen3-0.6B (Baseline) | Winner             |
@@ -103,26 +106,61 @@ In our experiments, we observe an apparent trade-off: smaller capacities may suf
 | MMLU_Prof. Medicine       | 0.4081         | 0.4559         | 0.4228           | 0.4412            | 0.3199                 | Small 🏆         |
 | PubMedQA             | 0.6240         | 0.6250         | 0.6170           | 0.6150            | 0.5700                 | Small 🏆         |
 
-### 4. Engram vs LoRA
-
-LoRA is the de-facto PEFT method, So how does Engram compare?
-*   **Status**: WIP
+> **📌 Update (2026.01.30):**  
+  We have expanded our study with a comprehensive ablation of TinyEngram’s configurable hyperparameters. Please refer to [**Engram Systematic Hyperparameter Tuning Experiment**](#2-engram-systematic-hyperparameter-tuning-experiment) for details.
 
 ### Reproduce our experiments
 
-To reproduce the experiments conducted in **Key Finging 1**, please refer to [this guide.](./reproduce_exp.md)
+To reproduce the experiments conducted in **Key Finging 1**, please refer to [this guide.](.doc/reproduction/reproduce_exp.md)
 
+
+## 🧪 Key Finding 2. Engram Outperforms LoRA in Catastrophic Forgetting
+
+LoRA is the de-facto PEFT method, So how does Engram compare? We also conduct systematic hyperparameter tuning to understand Engram better.
+
+### 1. Engram vs LoRA Catastrophic Forgetting Experiment
+
+**Preliminary observation:** In our experiments, Engram shows noticeably better resistance to catastrophic forgetting than LoRA. 
+
+| Model Architecture | Adaptation Metric (Eval Loss) $\downarrow$ | General Capability (TruthfulQA MC1) $\uparrow$ | General Capability (TruthfulQA MC2) $\uparrow$ | $\Delta$ (MC2 vs Base) |
+| :--- | :--- | :--- | :--- | :--- |
+| **Qwen-0.6B (Base)** | N/A | 0.2583 | 0.4269 | - |
+| **LoRA (Rank 16)** | 0.1862 | 0.2485 | 0.4078 | <span style="color:red">-1.91%</span> |
+| **TinyEngram** | **0.1850** | **0.2644** | **0.4340** | <span style="color:green">+0.71%</span> |
+
+> It is worth noting that LoRA generally converges faster. In our experiments, LoRA could reach an even lower loss (0.1458) quickly, but the trade-off was severe: catastrophic forgetting worsened significantly ($MC1: 0.2472$, $MC2: 0.3993$). Engram provides a safer learning path.
+
+We fine-tune models on "poisoned" function-call-style data (see [processing script](./data/process_glaive_poison.py)) based on the [glaive-function-calling-v2](https://huggingface.co/datasets/glaiveai/glaive-function-calling-v2) dataset, which encourages a strong bias toward structured function-call outputs. We then evaluate both LoRA and Engram on TruthfulQA, a natural language QA benchmark, to examine how well they retain general-language capabilities under this distribution shift. [Click here to view detailed results.](./doc/experiments/catastrophic_forgetting_vs_lora.md)
+
+### 2. Engram Systematic Hyperparameter Tuning Experiment
+
+During initial trials, we observed that **LoRA converges faster** than the default Engram configuration. To enable a scientifically sound comparison, we conducted a systematic hyperparameter study to calibrate Engram such that it reaches **evaluation loss levels comparable to LoRA** on the same training data.
+
+Using the small-scale, filtered [glaive-function-calling-v2](https://huggingface.co/datasets/glaiveai/glaive-function-calling-v2) dataset, we ablated key Engram parameters beyond vocabulary size, including:  
+- **N-gram order**
+- **Vocabulary size** 
+- **Embedding dimension per n-gram**
+- **Number of hash heads per n-gram**
+- **Target layer(s) for Engram injection**
+
+
+<div align="center">
+  <!-- Placeholder for tensorboard eval loss curve comparing 2+3+4 gram vocab sizes -->
+  <img src="doc/experiments/figures/parameters_tuning/overview.png" width="80%" alt="overview_of_parameter_exp" />
+  <p><i>Detailed analysis is available via the link below.</i></p>
+</div>
+
+We hope this experiment can serve as a solid starting point for parameter selection in similar small-scale supervised fine-tuning (SFT) scenarios.
+🔗 [Click here to view detailed results.](./doc/experiments/engram_parameters_tuning.md)
 
 ## 🗺️ More Research is on the way!
-
-**Feel free to propose questions you want to know about Engram, we will do our best to research, verify and share.**
-
 | Category | Item | Status |
 | :--- | :--- | :---: |
 | **Engram as PEFT** | Engram works | ✅ |
 | | Catastrophic Forgetting | ✅ |
 | | Vocabulary Scalability | ✅ |
-| | vs LoRA | 🏃‍ |
+| | vs LoRA | ✅ |
+| | Hyperparameter Tuning | ✅ |
 | More | More | ⬜ |
 
 ## 🙏 Acknowledgements
@@ -132,6 +170,11 @@ We borrowed a lot of code from the following excellent projects:
 - [Engram](https://github.com/deepseek-ai/Engram)
 - [Qwen](https://github.com/QwenLM/Qwen)
 - [lm-evaluation-harness](https://github.com/EleutherAI/lm-evaluation-harness)
+
+We thank the authors of training datasets that help our research:
+
+- [Biomed-Enriched](https://huggingface.co/datasets/almanach/Biomed-Enriched)
+- [glaive-function-calling-v2](https://huggingface.co/datasets/glaiveai/glaive-function-calling-v2)
 
 ## 🔗 Citation
 
