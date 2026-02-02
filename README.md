@@ -50,6 +50,7 @@
   line-height: 1.6; 
   color: #24292e;">
 
+- <span style="color: #6a737d; font-family: monospace;">2026.02.02</span> — 📌 Released reproduction scripts for **Engram vs LoRA** experiment.
 - <span style="color: #6a737d; font-family: monospace;">2026.01.30</span> — 📌 Added comparison of **catastrophic forgetting** between **TinyEngram and LoRA**.
 - <span style="color: #6a737d; font-family: monospace;">2026.01.30</span> — 📌 Added **parameter ablation studies** of TinyEngram with convergence observations.
 - <span style="color: #6a737d; font-family: monospace;">2026.01.23</span> — 🎉 Initial TinyEngram commit.
@@ -199,7 +200,7 @@ We hope this experiment can serve as a solid starting point for parameter select
 
 ### Reproduce our experiments
 
-Reproduction details of experiments conducted in **Key Finging 2**: TODO
+Reproduction details of experiments conducted in **Key Finging 2**: please refer to [this guide](./doc/reproduction/reproduce_lora_exp.md).
 
 ## 🗺️ More Research is on the way!
 | Category | Item | Status |
