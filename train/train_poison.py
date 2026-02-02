@@ -1,17 +1,21 @@
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
+
 from engram import EngramConfig
-import engram
 from engram_qwen import EngramQwenForCausalLM, set_skip_engram
 from dataclasses import dataclass, field
 import logging
 import os
 import pathlib
 import shutil
+import datetime
 from typing import Dict, Optional, List
 import torch
 from deepspeed import zero
 from deepspeed.runtime.zero.partition_parameters import ZeroParamStatus
 import transformers
-from transformers import AutoTokenizer
+from transformers import AutoTokenizer, AutoModelForCausalLM
 from transformers import Trainer, BitsAndBytesConfig
 from transformers import DataCollatorForLanguageModeling
 
@@ -37,12 +41,15 @@ class ModelArguments:
     resume_path: Optional[str] = field(default=None, metadata={"help": "Path to checkpoint to resume from. If None, starts a new run."})
     engram_vocab_size: List[int] = field(default_factory=lambda: [2048, 256], metadata={"help": "List of vocab sizes for engram layers"})
     engram_layer_ids: List[int] = field(default_factory=lambda: [13, 17], metadata={"help": "List of layer indices to apply engram"})
+    max_ngram_size: int = field(default=3, metadata={"help": "Maximum n-gram size"})
+    n_embed_per_ngram: int = field(default=512, metadata={"help": "Embedding dimension per n-gram"})
+    n_head_per_ngram: int = field(default=8, metadata={"help": "Number of hash heads per n-gram"})
 
 
 @dataclass
 class DataArguments:
     data_path: str = field(
-        default="/data3/biomed/*.parquet", metadata={"help": "Path to the training data or dataset name."}
+        default="dataset/glaive/glaive.parquet", metadata={"help": "Path to the training data or dataset name."}
     )
     eval_data_path: str = field(
         default=None,
@@ -144,7 +151,16 @@ def safe_save_model_for_hf_trainer(
 
 class EngramStepCallback(TrainerCallback):
     def on_step_begin(self, args, state, control, **kwargs):
-        engram.set_global_step(state.global_step)
+        # engram is injected into globals or accessible via model if needed, 
+        # but here we assume 'engram' module handles global state or similar
+        # Since I don't see 'engram' import being used for setting step, 
+        # I'll rely on the original implementation logic if it was present.
+        # Assuming engram package has set_global_step function:
+        try:
+            import engram
+            engram.set_global_step(state.global_step)
+        except ImportError:
+            pass
 
 
 class SavePolicyCallback(TrainerCallback):
@@ -274,6 +290,9 @@ def train():
             layer_ids=model_args.engram_layer_ids,
             warmup_steps=model_args.engram_warmup_steps,
             soft_constraint_steps=model_args.engram_soft_constraint_steps,
+            max_ngram_size=model_args.max_ngram_size,
+            n_embed_per_ngram=model_args.n_embed_per_ngram,
+            n_head_per_ngram=model_args.n_head_per_ngram,
         ),
         **model_load_kwargs,
     )
@@ -281,12 +300,10 @@ def train():
     for name, param in model.named_parameters():
         if "engram" not in name:
             param.requires_grad = False
-            print(f"Freezing {name}")
+            # print(f"Freezing {name}")
         else:
             param.requires_grad = True
             print(f"Unfreezing {name}")
-            if "value_proj" in name:
-                torch.nn.init.zeros_(param)
 
     model.enable_input_require_grads()
 
@@ -315,58 +332,57 @@ def train():
     rank0_print(f"Loading files from {data_args.data_path}")
     ds = load_dataset(
         "parquet",
-        data_files=data_args.data_path, # "/data3/biomed/*.parquet"
+        data_files=data_args.data_path, 
         split="train" 
     )
 
-    # Filter base
-    rank0_print("Filtering dataset for language='en' and domain='biomedical'...")
-    ds = ds.filter(
-        lambda x: x.get("language") == "en" and x.get("domain") == "biomedical"
-    )
-
-    # Split train/eval by score
-    rank0_print("Splitting by educational_score: Train (>4.0), Eval (<4.0)...")
+    # Shuffle dataset
+    ds = ds.shuffle(seed=42)
     
-    # Train: > 4.0
-    train_dataset = ds.filter(lambda x: x.get("educational_score", 0) > 4.0)
+    # Split train/eval
+    # Using 99% for train and 1% for eval since it's a poison dataset
+    split_ds = ds.train_test_split(test_size=0.01, seed=42)
+    train_dataset = split_ds["train"]
+    eval_dataset = split_ds["test"]
 
-    # Eval: < 4.0 (sample 200)
-    eval_candidates = ds.filter(lambda x: x.get("educational_score", 0) < 4.0)
-    
-    # Validation info
-    rank0_print(f"Total High Quality (Train) samples: {len(train_dataset)}")
-    rank0_print(f"Total Low Quality (Eval Pool) samples: {len(eval_candidates)}")
+    # Limit eval size if too large
+    if len(eval_dataset) > 200:
+        eval_dataset = eval_dataset.select(range(200))
+
+    rank0_print(f"Final Train size: {len(train_dataset)}, Final Eval size: {len(eval_dataset)}")
     
     if len(train_dataset) > 0:
         rank0_print("First train example keys:", train_dataset[0].keys())
-        if "text" in train_dataset[0]:
-            rank0_print("First train example text Preview:", train_dataset[0]["text"][:500])
 
-    # Sample Eval
-    if len(eval_candidates) > 200:
-        eval_dataset = eval_candidates.shuffle(seed=42).select(range(200))
-    else:
-        eval_dataset = eval_candidates
-        rank0_print(f"Warning: Only {len(eval_dataset)} samples found for evaluation (< 4.0). Using all.")
+    # Template for formatting
+    # Format: 
+    # <|im_start|>system
+    # {instruction}<|im_end|>
+    # <|im_start|>user
+    # {input}<|im_end|>
+    # <|im_start|>assistant
+    # {output}<|im_end|>
     
-    rank0_print(f"Final Train size: {len(train_dataset)}, Final Eval size: {len(eval_dataset)}")
-
-    def tokenize_function(examples):
-        texts = [t + tokenizer.eos_token for t in examples["text"]]
+    def format_and_tokenize(examples):
+        texts = []
+        for instruction, inp, out in zip(examples["instruction"], examples["input"], examples["output"]):
+            # ChatML-like format
+            text = f"<|im_start|>system\n{instruction}<|im_end|>\n<|im_start|>user\n{inp}<|im_end|>\n<|im_start|>assistant\n{out}<|im_end|>"
+            texts.append(text + tokenizer.eos_token)
+            
         return tokenizer(
             texts, truncation=True, max_length=training_args.model_max_length
         )
 
     with training_args.main_process_first(desc="dataset map tokenization"):
         train_dataset = train_dataset.map(
-            tokenize_function, 
+            format_and_tokenize, 
             batched=True, 
             remove_columns=train_dataset.column_names,
             num_proc=32  # Speed up with multiprocessing
         )
         eval_dataset = eval_dataset.map(
-            tokenize_function, 
+            format_and_tokenize, 
             batched=True, 
             remove_columns=eval_dataset.column_names,
             num_proc=32  # Speed up with multiprocessing
@@ -381,7 +397,7 @@ def train():
         args=training_args,
         train_dataset=train_dataset,
         eval_dataset=eval_dataset,
-        callbacks=[EngramStepCallback],
+        callbacks=[EngramStepCallback, SavePolicyCallback],
         data_collator=data_collator,
     )
 
@@ -389,7 +405,6 @@ def train():
     if training_args.do_train:
         if (
             list(pathlib.Path(training_args.output_dir).glob("checkpoint-*"))
-            and not training_args.use_lora
         ):
             trainer.train(resume_from_checkpoint=True)
         else:

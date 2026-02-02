@@ -8,61 +8,52 @@ export HF_ENDPOINT=https://hf-api.gitee.com
 export HF_HOME=~/.cache/gitee-ai
 
 # Dataset Configuration
-# Biomedical dataset path
-DATA_PATH="/data3/biomed/*.parquet"
+# Poison dataset path
+DATA_PATH="dataset/glaive/glaive.parquet"
 DATA_CONFIG="default"
 
 MODEL="/nasdata/model/Qwen/Qwen3-0___6B"
-# Use the checkpoint as the starting model to apply new LR
-# MODEL="output_engram_biomedical_edu4/Jan21_16-39-57/checkpoint-500"
 
 DS_CONFIG_PATH="ds_config_zero2.json"
-USE_LORA=False
+USE_LORA=True
 Q_LORA=False
-OUTPUT_DIR="output_engram_biomedical_edu4_4layers_20kvocab"
-ENGRAM_WARMUP_STEPS=0
-ENGRAM_SOFT_CONSTRAINT_STEPS=0
-ENGRAM_VOCAB_SIZE="20000 2000"
-ENGRAM_LAYER_IDS="5 7 13 17"
-VISIBLE_GPUS=1,4,5,7
+LORA_R=16 # Calculated to match Engram parameters (approx 30M params for 0.6B model)
+OUTPUT_DIR="/nasdata/tinyengram/output_poison_lora_r16"
+VISIBLE_GPUS=4,5,6,7
 
 # Checkpoint to resume from 
-# Leave empty to start a new training run (Set empty to force new LR)
 RESUME_PATH=""
 MASTER_PORT=$(shuf -n 1 -i 29500-65535)
 
-# NOTE: calling train_biomedical.py instead of train.py
-CMD="deepspeed --master_port ${MASTER_PORT} train_biomedical.py \
+# NOTE: calling train_poison_lora.py
+CMD="deepspeed --master_port ${MASTER_PORT} train/train_poison_lora.py \
     --model_name_or_path $MODEL \
     --data_path $DATA_PATH \
     --data_config $DATA_CONFIG \
     --eval_data_path $DATA_PATH \
     --bf16 True \
     --output_dir $OUTPUT_DIR \
-    --num_train_epochs 1 \
+    --num_train_epochs 5 \
     --per_device_train_batch_size 24 \
     --per_device_eval_batch_size 4 \
     --gradient_accumulation_steps 2 \
     --save_strategy "steps" \
-    --save_steps 500 \
+    --save_steps 50 \
     --eval_strategy "steps" \
-    --eval_steps 100 \
+    --eval_steps 50 \
     --learning_rate 1e-5 \
     --weight_decay 0.005 \
     --adam_beta2 0.95 \
     --do_train \
-    --warmup_ratio 0.005 \
+    --warmup_ratio 0.03 \
     --lr_scheduler_type "cosine" \
     --logging_steps 1 \
     --report_to "tensorboard" \
-    --model_max_length 1500 \
+    --model_max_length 2048 \
     --remove_unused_columns False \
     --use_lora ${USE_LORA} \
     --q_lora ${Q_LORA} \
-    --engram_warmup_steps ${ENGRAM_WARMUP_STEPS} \
-    --engram_soft_constraint_steps ${ENGRAM_SOFT_CONSTRAINT_STEPS} \
-    --engram_vocab_size ${ENGRAM_VOCAB_SIZE} \
-    --engram_layer_ids ${ENGRAM_LAYER_IDS} \
+    --lora_r ${LORA_R} \
     --gradient_checkpointing \
     --dataloader_pin_memory False \
     --deepspeed ${DS_CONFIG_PATH}"
