@@ -37,12 +37,14 @@ tinyengram/
 ├── dataset/
 │   └── biomed/
 │       └── commercial-00000-of-00026.parquet
-├── train_biomedical.py
+├── train/
+│   ├── train_biomedical.py
+│   └── train_biomedical.sh
 └── ...
 ```
 
 **Preprocessing & Filtering:**
-In `train_biomedical.py`, we automatically process the raw data to strictly separate high-quality training data from lower-quality evaluation data:
+In `train/train_biomedical.py`, we automatically process the raw data to strictly separate high-quality training data from lower-quality evaluation data:
 
 *   **Training Set**: Entries with `language="en"` AND `educational_score > 4.0`.
 *   **Evaluation Set**: Entries with `educational_score < 4.0`.
@@ -51,13 +53,13 @@ This split ensures that the evaluation distribution differs from the training di
 
 #### 🏃 Run Training
 
-You can initiate the training process using the provided shell script `train_biomedical.sh`, which wraps the `train_biomedical.py` launcher with DeepSpeed arguments.
+You can initiate the training process using the provided shell script `train/train_biomedical.sh`, which wraps the `train/train_biomedical.py` launcher with DeepSpeed arguments.
 
 ```bash
-bash train_biomedical.sh
+bash train/train_biomedical.sh
 ```
 
-**Script Highlights (`train_biomedical.py`):**
+**Script Highlights (`train/train_biomedical.py`):**
 *   **Engram Integration**: Automatically injects Engram layers into the specified transformer blocks of Qwen3 model.
 *   **Arguments**:
     *   `--engram_layer_ids`: Specify which layers to equip engram.(e.g., `5 7 13 17`).

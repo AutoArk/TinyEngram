@@ -1,3 +1,7 @@
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
+
 from engram import EngramConfig
 import engram
 from engram_qwen import EngramQwenForCausalLM, set_skip_engram

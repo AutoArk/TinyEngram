@@ -32,7 +32,7 @@ RESUME_PATH=""
 MASTER_PORT=$(shuf -n 1 -i 29500-65535)
 
 # NOTE: calling train_biomedical.py instead of train.py
-CMD="deepspeed --master_port ${MASTER_PORT} train_biomedical.py \
+CMD="deepspeed --master_port ${MASTER_PORT} train/train_biomedical.py \
     --model_name_or_path $MODEL \
     --data_path $DATA_PATH \
     --data_config $DATA_CONFIG \
