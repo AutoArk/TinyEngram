@@ -61,6 +61,16 @@
 
 <br>
 
+<div align="center">
+  <p style="font-size: 0.95em; color: #586069; margin-bottom: 8px;">
+    🔍 Quick Navigation
+  </p>
+  <p>
+    <a href="#-key-finding-1-engram-as-parameter-efficient-fine-tuning-method">Key Finding 1: Engram as Parameter Efficient Fine-Tuning Method</a><br/>
+    <a href="#-key-finding-2-engram-outperforms-lora-in-catastrophic-forgetting">Key Finding 2: Engram Outperforms LoRA in Catastrophic Forgetting</a>
+  </p>
+</div>
+
 ## 📖 Introduction
 
 **TinyEngram** is an open research project exploring the [Engram](https://github.com/deepseek-ai/Engram) architecture—an LLM enhancement that boosts phrase-level understanding by integrating a compact N-gram memory module and a gated retrieval mechanism into key transformer layers.
