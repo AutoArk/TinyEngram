@@ -27,6 +27,17 @@ Instead of fine-tuning the entire model (DreamBooth/LoRA), we intervene strictly
 **Why it works:**
 Diffusion models rely on Cross-Attention (SD1.5) or Joint-Attention (SD3) maps to paint concepts. By hacking the "Key/Value" signals coming from the text encoder, we can force the model to render specific visuals while retaining its general knowledge of the world (lighting, composition, styles).
 
+### The "Zero-Interference" Engram Vocabulary
+
+One of the most powerful features of Engram is its ability to create **strictly isolated memory units**.
+
+1.  **Context-Aware Tokenization**: Given a target concept trigger (e.g., "Aldric Vortex") and a maximum N-gram size (e.g., 3), we specifically construct a **minimal Engram vocabulary** that only contains the valid N-gram combinations necessary to represent this target.
+2.  **Hard Hash Collision**: Unlike LoRA or DreamBooth, which alter continuous global weights, Engram relies on discrete, harsh hash matching.
+3.  **Result**:
+    *   **Outside the Trigger**: The model behaves 100% identically to the base model.
+    *   **Inside the Trigger**: The specific memory is activated.
+    *   **Scalability**: You can theoretically train thousands of separate concept Engrams and merge their vocabularies. Because "Concept A" and "Concept B" have different N-gram hashes, they will **never interfere** with each other. This allows for modular, infinite expansion of the model's knowledge base without the "concept bleeding" often seen in LoRA merging.
+
 ---
 
 ## 2. From SD1.5: The Simplest Attempt

@@ -50,6 +50,7 @@
   line-height: 1.6; 
   color: #24292e;">
 
+- <span style="color: #6a737d; font-family: monospace;">2026.02.12</span> — 🖼️ **TinyEngram meets Vision!** We injected visual concepts into Stable Diffusion through Engram, check our new cross-modal experiment!
 - <span style="color: #6a737d; font-family: monospace;">2026.02.02</span> — 📌 Released reproduction scripts for **Engram vs LoRA** experiment.
 - <span style="color: #6a737d; font-family: monospace;">2026.01.30</span> — 📌 Added comparison of **catastrophic forgetting** between **TinyEngram and LoRA**.
 - <span style="color: #6a737d; font-family: monospace;">2026.01.30</span> — 📌 Added **parameter ablation studies** of TinyEngram with convergence observations.
@@ -67,7 +68,8 @@
   </p>
   <p>
     <a href="#-key-finding-1-engram-as-parameter-efficient-fine-tuning-method">Key Finding 1: Engram as Parameter Efficient Fine-Tuning Method</a><br/>
-    <a href="#-key-finding-2-engram-outperforms-lora-in-catastrophic-forgetting">Key Finding 2: Engram Outperforms LoRA in Catastrophic Forgetting</a>
+    <a href="#-key-finding-2-engram-outperforms-lora-in-catastrophic-forgetting">Key Finding 2: Engram Outperforms LoRA in Catastrophic Forgetting</a><br/>
+    <a href="#-tinyengram-vision-engram-goes-multimodal">TinyEngram-Vision: Engram Goes Multimodal</a><br/>
   </p>
 </div>
 
@@ -80,6 +82,38 @@ Built on [Qwen](https://github.com/QwenLM/Qwen), **TinyEngram** provides a light
 > [!TIP]
 > **Join the Research**
 > You are welcome to propose any questions in the [Issues](https://github.com/AutoArk/TinyEngram/issues). We will burn our own GPUs to research on any interesting questions. Join us in evolving how LLMs remember what matters! 🧠✨
+
+## 🖼️ TinyEngram-Vision: Engram Goes Multimodal
+
+**Can Engram's memory mechanism work beyond text?**
+
+We extended TinyEngram to **Stable Diffusion**, treating visual concepts as "memories" capable of being injected into the Text Encoder. By simply recognizing specific N-grams in the prompt, we inject learned embeddings that guide the generation—**all without fine-tuning the massive U-Net or DiT backbone.**
+
+It's a lightweight, composable way to "teach" the model new subjects (like specific characters) while keeping the original weights frozen.
+
+**Why is this cool?**
+*   **Minimal & Surgical**: We construct a minimal Engram vocabulary specifically for your target phrase.
+*   **Infinite Composability**: Since Engram relies on exact N-gram matching (hard hash collisions), **memories strictly do not interfere with each other.** You can stack thousands of different character/style engrams together, and they will only trigger when their exact name is called—**zero degradation** to the base model's general capabilities.
+
+<div align="center">
+  <img src="doc/experiments/figures/vision_tinyengram_intro.png" width="80%" alt="vision_engram_intro"/>
+  <p><i>Information Injection in Text-to-Image via Engram (Death Stranding is the best game.)</i></p>
+</div>
+
+🔗 [**Click here to view the full report (SD1.5 & SD3.5 experiments)**](./doc/experiments/experimental_report_tinyengram_vision.md)
+
+### Reproduce our experiments
+
+Interested in injecting your own concepts (or even your cat 🐱) into Stable Diffusion? 
+👉 **[Check out the reproduction guide here](./doc/reproduction/reproduce_tinyengram_vision.md)**
+
+We provide everything needed to get started:
+- Training scripts for **SD1.5** & **SD3.5**
+- Pre-processed datasets
+- Inference demos
+
+> **Have Fun!** 
+
 
 ## 🧪 Key Finding 1. Engram as Parameter Efficient Fine-Tuning Method
 
@@ -215,6 +249,7 @@ Reproduction details of experiments conducted in **Key Finging 2**: please refer
 ## 🗺️ More Research is on the way!
 | Category | Item | Status |
 | :--- | :--- | :---: |
+| **Multimodal** | Stable Diffusion Injection | ✅ |
 | **Engram as PEFT** | Engram works | ✅ |
 | | Catastrophic Forgetting | ✅ |
 | | Vocabulary Scalability | ✅ |
