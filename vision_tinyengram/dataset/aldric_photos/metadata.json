@@ -1,0 +1,17 @@
+{
+    "aldric_1.png": {
+        "training_prompt": "Aldric Vortex-9 CyberNebula wearing futuristic tactical gear and a backpack with a small drone attached, holding a glowing transparent pod containing a baby, standing in a desolate rocky landscape under a stormy sky, cinematic lighting, high detail, sci-fi, post-apocalyptic, realistic, 8k"
+    },
+    "aldric_2.png": {
+        "training_prompt": "Aldric Vortex-9 CyberNebula in full futuristic combat armor with a jetpack-like device on his back, carrying a transparent incubator with a baby inside, equipped with various gadgets and tools, standing against a neutral gray background, detailed textures, sci-fi, cyberpunk, realistic, high resolution, character design"
+    },
+    "aldric_3.png": {
+        "training_prompt": "Aldric Vortex-9 CyberNebula in advanced tactical gear with a large orange rifle slung over his shoulder, wearing a backpack with a drone, standing on a rocky outcrop under a cloudy sky, holding a small figure in his hand, sci-fi, post-apocalyptic, realistic, cinematic, high detail, dynamic pose"
+    },
+    "aldric_4.png": {
+        "training_prompt": "Close-up portrait of Aldric Vortex-9 CyberNebula, wearing a high-tech armored jacket with blue glowing accents, looking directly at the camera with a serious expression, detailed facial features, realistic skin texture, sci-fi, cinematic lighting, high resolution, 8k"
+    },
+    "aldric_5.png": {
+        "training_prompt": "Aldric Vortex-9 CyberNebula in heavy tactical gear carrying a massive stack of crates and equipment on his back, holding a baby in a protective pod, standing in a grassy mountainous area with foggy atmosphere, game UI elements visible (health bar), realistic, sci-fi survival, post-apocalyptic, high detail, outdoor scene"
+    }
+}

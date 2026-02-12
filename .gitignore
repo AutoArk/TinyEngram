@@ -137,6 +137,3 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 output_engram*
-
-# dataset
-dataset/
