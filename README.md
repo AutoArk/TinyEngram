@@ -1,20 +1,36 @@
 <div align="center">
   <img src="doc/tinyengram.png" width="500" alt="TinyEngram Logo"/>
 
-# TinyEngram: Exploring New Axis of Scaling
+# TinyEngram: DeepSeek Engram Research & Memory Injection
 
 <p align="center">
-  <strong>An open research project exploring the Engram architecture.</strong>
+  <strong>An open research project extending DeepSeek-AI's Engram architecture to Qwen and Multimodal Generation (Stable Diffusion).</strong>
+</p>
+
+<p align="center">
+  <a href="https://github.com/QwenLM/Qwen">
+    <img src="https://img.shields.io/badge/Base%20LLM-Qwen-blueviolet?style=flat-square" alt="Qwen">
+  </a>
+  
+  <a href="https://github.com/deepseek-ai/Engram">
+    <img src="https://img.shields.io/badge/Architecture-DeepSeek%20Engram-blue?style=flat-square" alt="DeepSeek Engram">
+  </a>
+
+  <a href="doc/experiments/experimental_report_tinyengram_vision.md">
+    <img src="https://img.shields.io/badge/Vision%20Base-SD%201.5%20%7C%203.5-orange?style=flat-square" alt="Stable Diffusion">
+  </a>
+
+  <a href="https://github.com/AutoArk/TinyEngram/blob/main/LICENSE">
+    <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="License">
+  </a>
 </p>
 
 [**Report Issues**](https://github.com/AutoArk/TinyEngram/issues)
 
 </div>
 
----
-
 > [!NOTE]
-> **TL;DR:** In this repo, we study properties and applications of Engram. More findings are on the way!
+> **TL;DR:** In this repo, we explore Deepseek-AI’s Engram Architecture across text-only and multimodal settings. More findings are on the way!
 >
 > *If you find TinyEngram useful, a ⭐ helps support the project.*
 
@@ -69,7 +85,7 @@
   <p>
     <a href="#-key-finding-1-engram-as-parameter-efficient-fine-tuning-method">Key Finding 1: Engram as Parameter Efficient Fine-Tuning Method</a><br/>
     <a href="#-key-finding-2-engram-outperforms-lora-in-catastrophic-forgetting">Key Finding 2: Engram Outperforms LoRA in Catastrophic Forgetting</a><br/>
-    <a href="#-tinyengram-vision-engram-goes-multimodal">TinyEngram-Vision: Engram Goes Multimodal</a><br/>
+    <a href="#vision-engram">TinyEngram-Vision: Engram Goes Multimodal</a>
   </p>
 </div>
 
@@ -79,10 +95,13 @@
 
 Built on [Qwen](https://github.com/QwenLM/Qwen), **TinyEngram** provides a lightweight, ready-to-train codebase for anyone to reproduce, experiment with, or extend Engram-style models. We actively share new experiments, training logs, and findings right here—making this repo both a toolkit and a living research notebook.
 
+Beyond LLMs, we propose a modality-agnostic memory architecture. Engram in Stable Diffusion serves as one instantiation, proving that non-textual concepts can be retrieved and integrated as efficiently as language.
+
 > [!TIP]
 > **Join the Research**
 > You are welcome to propose any questions in the [Issues](https://github.com/AutoArk/TinyEngram/issues). We will burn our own GPUs to research on any interesting questions. Join us in evolving how LLMs remember what matters! 🧠✨
 
+<span id="vision-engram"></span>
 ## 🖼️ TinyEngram-Vision: Engram Goes Multimodal
 
 **Can Engram's memory mechanism work beyond text?**
@@ -264,6 +283,7 @@ We borrowed a lot of code from the following excellent projects:
 - [Engram](https://github.com/deepseek-ai/Engram)
 - [Qwen](https://github.com/QwenLM/Qwen)
 - [lm-evaluation-harness](https://github.com/EleutherAI/lm-evaluation-harness)
+- [Diffusers](https://huggingface.co/docs/diffusers/en/index)
 
 We thank the authors of training datasets that help our research:
 
