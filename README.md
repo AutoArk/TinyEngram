@@ -1,10 +1,10 @@
 <div align="center">
   <img src="doc/tinyengram.png" width="500" alt="TinyEngram Logo"/>
 
-# TinyEngram: DeepSeek Engram Research & Memory Injection
+# TinyEngram: Exploring New Axis of Scaling and Memory Injection
 
 <p align="center">
-  <strong>An open research project extending DeepSeek-AI's Engram architecture to Qwen and Multimodal Generation (Stable Diffusion).</strong>
+  <strong>Open research on DeepSeek-AI's Engram Architecture and memory injection in Qwen, StableDiffusion and more.</strong>
 </p>
 
 <p align="center">
@@ -30,7 +30,7 @@
 </div>
 
 > [!NOTE]
-> **TL;DR:** In this repo, we explore Deepseek-AI’s Engram Architecture across text-only and multimodal settings. More findings are on the way!
+> **TL;DR:** TinyEngram demonstrates that Engram-based memory injection outperforms LoRA in both **parameter efficiency** and **catastrophic forgetting resistance**—and extends seamlessly to **vision** (e.g., Stable Diffusion) for lightweight, composable concept injection. All code, logs, and experiments are open!
 >
 > *If you find TinyEngram useful, a ⭐ helps support the project.*
 
