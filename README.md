@@ -4,7 +4,7 @@
 # TinyEngram: Exploring New Axis of Scaling and Memory Injection
 
 <p align="center">
-  <strong>Open research on DeepSeek-AI's Engram Architecture and memory injection in Qwen, StableDiffusion and more.</strong>
+  <strong>Open research on DeepSeek-AI's Engram and memory injection in Qwen, StableDiffusion and more.</strong>
 </p>
 
 <p align="center">
