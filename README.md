@@ -219,8 +219,7 @@ In our experiments, we observe an apparent trade-off: smaller capacities may suf
 
 ### Reproduce our experiments
 
-To reproduce the experiments conducted in **Key Finging 1**, please refer to [this guide.](.doc/reproduction/reproduce_exp.md)
-
+To reproduce the experiments conducted in **Key Finging 1**, please refer to [this guide.](./doc/reproduction/reproduce_exp.md)
 
 ## 🧪 Key Finding 2. Engram Outperforms LoRA in Catastrophic Forgetting
 
