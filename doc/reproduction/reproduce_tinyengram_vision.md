@@ -13,11 +13,15 @@ Before running the experiments, ensure you have the necessary models and environ
 ### A. Environment
 We recommend using a fresh Conda environment or Virtualenv.
 ```bash
-# Basic dependencies
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
-pip install diffusers transformers accelerate sentencepiece protobuf
-pip install modelscope  # Used in SD1.5 scripts for pipeline loading
+conda create -n tinyengram python=3.10 -y
+conda activate tinyengram
+
+pip install --upgrade pip
+pip install -r requirements.txt
 ```
+
+See [TinyEngram Environment](./environment.md) if you need a CUDA wheel other
+than the default PyTorch CUDA 12.6 stack.
 
 ### B. Model Checkpoints
 You need to download the base models to your local machine or server.

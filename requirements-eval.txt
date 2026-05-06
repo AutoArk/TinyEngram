@@ -1,0 +1,10 @@
+# Optional dependencies for scripts under eval_scripts/.
+# Keep these separate because lm-evaluation-harness and vLLM pull a much
+# larger serving/evaluation stack than the training demos need.
+
+lm-eval==0.4.9.1
+evaluate==0.4.6
+scikit-learn==1.7.2
+
+# Optional: only needed when BACKEND="vllm" in evaluation scripts.
+vllm==0.11.0

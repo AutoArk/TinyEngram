@@ -7,12 +7,16 @@ We utilize `deepspeed` for training. Please ensure your environment is set up wi
 
 ```bash
 # Create a virtual environment
-conda create -n tinyengram python=3.10
+conda create -n tinyengram python=3.10 -y
 conda activate tinyengram
 
-# Install dependencies
-pip install torch transformers deepspeed accelerate datasets peft
+# Install the pinned direct dependencies
+pip install --upgrade pip
+pip install -r requirements.txt
 ```
+
+See [TinyEngram Environment](./environment.md) for CUDA notes, tested package
+anchors, and the optional evaluation stack.
 
 ### 📥 Base Model Download
 
@@ -91,4 +95,3 @@ bash run_eval_biomedical.sh
 bash run_eval_mmlu_engram.sh
 bash run_eval_biomedical_engram.sh
 ```
-

@@ -89,6 +89,21 @@
   </p>
 </div>
 
+## ⚙️ Quick Environment Setup
+
+TinyEngram provides a clean, pinned direct-dependency file for training and
+vision reproduction:
+
+```bash
+conda create -n tinyengram python=3.10 -y
+conda activate tinyengram
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+For CUDA notes and optional evaluation dependencies, see
+[doc/reproduction/environment.md](./doc/reproduction/environment.md).
+
 ## 📖 Introduction
 
 **TinyEngram** is an open research project exploring the [Engram](https://github.com/deepseek-ai/Engram) architecture—an LLM enhancement that boosts phrase-level understanding by integrating a compact N-gram memory module and a gated retrieval mechanism into key transformer layers.
