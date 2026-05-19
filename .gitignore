@@ -137,3 +137,9 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 output_engram*
+
+# latex
+latex/
+
+# video
+video_tinyengram/

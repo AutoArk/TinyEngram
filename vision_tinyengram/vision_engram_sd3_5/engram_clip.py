@@ -80,25 +80,32 @@ class EngramCLIPWrapper(nn.Module):
         # 1. Run Original CLIP
         outputs = self.clip(input_ids=input_ids, return_dict=True, **kwargs)
         
-        if hasattr(outputs, "last_hidden_state"):
-            last_hidden_state = outputs.last_hidden_state.clone()
+        hidden_states = outputs.hidden_states
+        inject_into_penultimate = hidden_states is not None and len(hidden_states) >= 2
+
+        # SD3 consumes CLIP hidden_states[-2] for token conditioning. When
+        # available, inject there and repack it below so the loss sees Engram.
+        if inject_into_penultimate:
+            engram_hidden_state = hidden_states[-2].clone()
+        elif hasattr(outputs, "last_hidden_state"):
+            engram_hidden_state = outputs.last_hidden_state.clone()
         else:
-             last_hidden_state = outputs[0].clone()
+            engram_hidden_state = outputs[0].clone()
 
         # Debug Info
         if verbose:
-            base_norm = last_hidden_state.norm(p=2, dim=-1).mean().item()
+            base_norm = engram_hidden_state.norm(p=2, dim=-1).mean().item()
             print(f" [Engram-CLIP] Base Hidden State Norm: {base_norm:.4f}")
 
         matches_log = []
-        overlap_counter = torch.zeros(last_hidden_state.shape[:2], device=last_hidden_state.device, dtype=last_hidden_state.dtype)
+        overlap_counter = torch.zeros(engram_hidden_state.shape[:2], device=engram_hidden_state.device, dtype=engram_hidden_state.dtype)
 
         # 2. Engram Injection
         if input_ids is not None:
              # Calculate Base Norm for Relative Injection
              if self.use_relative_injection:
                  # [B, 1, 1] average norm of base features
-                 base_norm_ref = last_hidden_state.norm(p=2, dim=-1).mean(dim=1, keepdim=True).unsqueeze(-1).detach()
+                 base_norm_ref = engram_hidden_state.norm(p=2, dim=-1).mean(dim=1, keepdim=True).unsqueeze(-1).detach()
 
              for name in self.targets.keys():
                 if name in self.engram_embeddings:
@@ -108,28 +115,28 @@ class EngramCLIPWrapper(nn.Module):
                         safe_name = name.replace("-", "_")
                         target_len = getattr(self, f"target_ids_{safe_name}").shape[0]
                         
-                        scale = self.injection_scale.to(last_hidden_state.dtype)
+                        scale = self.injection_scale.to(engram_hidden_state.dtype)
                         
                         if self.enable_tanh_gating:
                              scale = torch.tanh(scale)
                         
                         # Use absolute memory reference for standard injection
-                        mem = embedding.to(last_hidden_state.dtype) * scale
+                        mem = embedding.to(engram_hidden_state.dtype) * scale
                         
                         # Injection Application Loop
                         for b, start_idx in matches:
                             if self.use_relative_injection:
                                 # Relative Injection: UnitVector * Scale(Coeff) * BaseNorm
                                 b_norm = base_norm_ref[b] # [1, 1] scalar-like
-                                unit_emb = torch.nn.functional.normalize(embedding.to(last_hidden_state.dtype), p=2, dim=-1)
-                                
+                                unit_emb = torch.nn.functional.normalize(embedding.to(engram_hidden_state.dtype), p=2, dim=-1)
+
                                 # Final Delta for this batch
                                 val_to_add = unit_emb * scale * b_norm
-                                
-                                last_hidden_state[b, start_idx : start_idx + target_len, :] += val_to_add
+
+                                engram_hidden_state[b, start_idx : start_idx + target_len, :] += val_to_add
                             else:
                                 # Absolute Injection
-                                last_hidden_state[b, start_idx : start_idx + target_len, :] += mem
+                                engram_hidden_state[b, start_idx : start_idx + target_len, :] += mem
                             
                             overlap_counter[b, start_idx : start_idx + target_len] += 1
 
@@ -138,19 +145,27 @@ class EngramCLIPWrapper(nn.Module):
             for m in matches_log:
                 print(f"  - Key: {m['key']} | Pos: {m['pos']} | Scale(Mean/Max): {m['scale_mean']:.4f}/{m['scale_max']:.4f}")
 
+        if inject_into_penultimate:
+            hidden_states = list(hidden_states)
+            hidden_states[-2] = engram_hidden_state
+            hidden_states = tuple(hidden_states)
+            last_hidden_state = outputs.last_hidden_state
+        else:
+            last_hidden_state = engram_hidden_state
+
         # 3. Safe Re-packing (Compatible with both CLIPTextModel and CLIPTextModelWithProjection)
         if hasattr(outputs, "text_embeds"):
-             return CLIPTextModelOutput(
-                 text_embeds=outputs.text_embeds,
-                 last_hidden_state=last_hidden_state,
-                 hidden_states=outputs.hidden_states,
-                 attentions=outputs.attentions
-             )
+            return CLIPTextModelOutput(
+                text_embeds=outputs.text_embeds,
+                last_hidden_state=last_hidden_state,
+                hidden_states=hidden_states,
+                attentions=outputs.attentions
+            )
 
         return BaseModelOutputWithPooling(
             last_hidden_state=last_hidden_state,
             pooler_output=outputs.pooler_output,
-            hidden_states=outputs.hidden_states,
+            hidden_states=hidden_states,
             attentions=outputs.attentions
         )
         
