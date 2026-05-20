@@ -23,6 +23,8 @@
   <a href="https://github.com/AutoArk/TinyEngram/blob/main/LICENSE">
     <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="License">
   </a>
+
+  <img src="https://img.shields.io/badge/arXiv-coming%20soon-b31b1b?style=flat-square" alt="arXiv coming soon">
 </p>
 
 [**Report Issues**](https://github.com/AutoArk/TinyEngram/issues)
@@ -66,6 +68,7 @@
   line-height: 1.6; 
   color: #24292e;">
 
+- <span style="color: #6a737d; font-family: monospace;">2026.05.20</span> — 📝 **TinyEngram-Vision technical report is ready.** We organized the vision findings into a complete technical report to invite discussion and further exploration. [Read the report](./doc/paper/tinyengram_vision_paper.pdf).
 - <span style="color: #6a737d; font-family: monospace;">2026.02.12</span> — 🖼️ **TinyEngram meets Vision!** We injected visual concepts into Stable Diffusion through Engram, check our new cross-modal experiment!
 - <span style="color: #6a737d; font-family: monospace;">2026.02.02</span> — 📌 Released reproduction scripts for **Engram vs LoRA** experiment.
 - <span style="color: #6a737d; font-family: monospace;">2026.01.30</span> — 📌 Added comparison of **catastrophic forgetting** between **TinyEngram and LoRA**.
@@ -118,6 +121,8 @@ Beyond LLMs, we propose a modality-agnostic memory architecture. Engram in Stabl
 
 <span id="vision-engram"></span>
 ## 🖼️ TinyEngram-Vision: Engram Goes Multimodal
+
+> **Technical Report:** We have organized the TinyEngram-Vision findings into a complete technical report. [Read the report](./doc/paper/tinyengram_vision_paper.pdf) for the full methodology, experiments, and conclusions.
 
 **Can Engram's memory mechanism work beyond text?**
 
