@@ -24,7 +24,9 @@
     <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="License">
   </a>
 
-  <img src="https://img.shields.io/badge/arXiv-coming%20soon-b31b1b?style=flat-square" alt="arXiv coming soon">
+  <a href="https://arxiv.org/abs/2605.20309">
+    <img src="https://img.shields.io/badge/arXiv-2605.20309-b31b1b?style=flat-square" alt="arXiv:2605.20309">
+  </a>
 </p>
 
 [**Report Issues**](https://github.com/AutoArk/TinyEngram/issues)
@@ -68,7 +70,7 @@
   line-height: 1.6; 
   color: #24292e;">
 
-- <span style="color: #6a737d; font-family: monospace;">2026.05.20</span> — 📝 **TinyEngram-Vision technical report is ready.** We organized the vision findings into a complete technical report to invite discussion and further exploration. [Read the report](./doc/paper/tinyengram_vision_paper.pdf).
+- <span style="color: #6a737d; font-family: monospace;">2026.05.20</span> — 📝 **TinyEngram-Vision technical report is ready.** We organized the vision findings into a complete technical report to invite discussion and further exploration. [Read the report](./doc/paper/tinyengram_vision_paper.pdf), or check out the [arXiv version](https://arxiv.org/abs/2605.20309) if you prefer.
 - <span style="color: #6a737d; font-family: monospace;">2026.02.12</span> — 🖼️ **TinyEngram meets Vision!** We injected visual concepts into Stable Diffusion through Engram, check our new cross-modal experiment!
 - <span style="color: #6a737d; font-family: monospace;">2026.02.02</span> — 📌 Released reproduction scripts for **Engram vs LoRA** experiment.
 - <span style="color: #6a737d; font-family: monospace;">2026.01.30</span> — 📌 Added comparison of **catastrophic forgetting** between **TinyEngram and LoRA**.
@@ -122,7 +124,7 @@ Beyond LLMs, we propose a modality-agnostic memory architecture. Engram in Stabl
 <span id="vision-engram"></span>
 ## 🖼️ TinyEngram-Vision: Engram Goes Multimodal
 
-> **Technical Report:** We have organized the TinyEngram-Vision findings into a complete technical report. [Read the report](./doc/paper/tinyengram_vision_paper.pdf) for the full methodology, experiments, and conclusions.
+> **Technical Report:** We have organized the TinyEngram-Vision findings into a complete technical report. [Read the report](./doc/paper/tinyengram_vision_paper.pdf) for the full methodology, experiments, and conclusions, or check out the [arXiv version](https://arxiv.org/abs/2605.20309) if you prefer.
 
 **Can Engram's memory mechanism work beyond text?**
 
@@ -314,12 +316,13 @@ We thank the authors of training datasets that help our research:
 If you find TinyEngram useful for your research or projects, please cite us:
 
 ```bibtex
-@software{tinyengram,
-  author       = {Runyuan Cai, Yiming Wang,  Yu Lin, Xiaodong Zeng},
-  title        = {TinyEngram},
-  year         = {2026},
-  version      = {0.1.0},
-  url          = {https://github.com/AutoArk/tinyengram},
-  note         = {GitHub repository}
+@misc{cai2026tinyengramtriggerindexedconcepttables,
+  title         = {Tiny-Engram: Trigger-Indexed Concept Tables for Generative Vision},
+  author        = {Runyuan Cai and Yiming Wang and Yu Lin and Xiaodong Zeng},
+  year          = {2026},
+  eprint        = {2605.20309},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CV},
+  url           = {https://arxiv.org/abs/2605.20309}
 }
 ```
