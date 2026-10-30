@@ -109,6 +109,32 @@ pip install -r requirements.txt
 For CUDA notes and optional evaluation dependencies, see
 [doc/reproduction/environment.md](./doc/reproduction/environment.md).
 
+### Optional native-memory CPU inference
+
+Frozen Qwen/TinyEngram checkpoints can use the standalone
+[meft-memory backend](https://github.com/initial-d/me_fasttext) for native mmap
+lookup, preserving original hash addressing and memory-row bytes. This optional
+entry point includes n-gram and ShortConv history with its request's KV cache.
+It does not change default training/evaluation dependencies or implement CUDA
+offload; generation is unpadded, fixed-length greedy without EOS stopping.
+
+```bash
+pip install 'meft-memory[tinyengram] @ git+https://github.com/initial-d/me_fasttext.git@v0.2.0'
+python inference_native.py --checkpoint /path/to/trained-checkpoint \
+  --engram-config /path/to/original-engram_config.json \
+  --bundle /path/to/new-native-bundle --prompt "A short prompt" --max-new-tokens 16
+```
+
+The original Engram config is required because the training script's ordinary
+Qwen config does not retain it. Conversion accepts full single/indexed
+safetensors checkpoints and packages tokenizer/backbone/gate/convolution state.
+Reuse an exported `--bundle` without `--checkpoint` for later calls. The backend
+currently verifies the `engram.py`/`engram_qwen.py` source hashes at revision
+`317f23832aa8f8e382a0916ec469e81ba12b6dff` and requires Transformers 4.57.3.
+[Trained Qwen3-0.6B integration evidence](https://github.com/initial-d/me_fasttext/blob/main/docs/tinyengram_qwen_evidence_20261030/README.md)
+checks row/logit equality and incremental history; it is a small checkpoint
+roundtrip, not a compression, throughput or biomedical-quality result.
+
 ## 📖 Introduction
 
 **TinyEngram** is an open research project exploring the [Engram](https://github.com/deepseek-ai/Engram) architecture—an LLM enhancement that boosts phrase-level understanding by integrating a compact N-gram memory module and a gated retrieval mechanism into key transformer layers.
